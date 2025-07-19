@@ -6,7 +6,7 @@ import SiteHeader from '@/components/site-header';
 import SiteFooter from '@/components/site-footer';
 
 export const metadata: Metadata = {
-  title: 'Dynamic Product Ace',
+  title: 'Cube Fitness',
   description: 'Dynamic Product Page',
 };
 

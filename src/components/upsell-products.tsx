@@ -26,7 +26,7 @@ const relatedProducts = [
     id: 3,
     name: "Vitamins Pack",
     price: 29.99,
-    image: "https://placehold.co/400x400.png",
+    image: "https://www.nutrabliss.in/cdn/shop/files/WhatsApp_Image_2024-08-21_at_2.46.25_PM.jpg?v=1724231953",
     hint: "vitamin pills",
   },
    {
