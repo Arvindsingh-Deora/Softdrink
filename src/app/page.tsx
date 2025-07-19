@@ -59,7 +59,7 @@ const productData = {
   ],
   images: {
     chocolate: [
-      { id: 1, url: "https://placehold.co/600x600.png", alt: "Chocolate protein powder", hint: "protein powder" },
+      { id: 1, url: "https://static.thcdn.com/productimg/original/11654605-1275212429129161.jpg", alt: "Chocolate protein powder", hint: "protein powder" },
       { id: 2, url: "https://placehold.co/100x100.png", alt: "Scoop of chocolate powder", hint: "scoop powder" },
       { id: 3, url: "https://placehold.co/100x100.png", alt: "Lifestyle fitness", hint: "lifestyle fitness" },
       { id: 4, url: "https://placehold.co/100x100.png", alt: "Protein drink bottle", hint: "drink bottle" },
@@ -141,6 +141,7 @@ export default function ProductPage() {
               fill
               className="object-cover"
               data-ai-hint={mainImage.hint}
+              unoptimized
             />
           </div>
           <div className="grid grid-cols-4 gap-4">
@@ -153,7 +154,7 @@ export default function ProductPage() {
                 )}
                 onClick={() => setMainImage(image)}
               >
-                <Image src={image.url} alt={image.alt} fill className="object-cover" data-ai-hint={image.hint} />
+                <Image src={image.url} alt={image.alt} fill className="object-cover" data-ai-hint={image.hint} unoptimized />
               </button>
             ))}
           </div>

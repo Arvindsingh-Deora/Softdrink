@@ -1,6 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/hooks/use-cart";
+import type { CartItem } from "@/components/providers/cart-provider";
+import { useToast } from "@/hooks/use-toast";
 
 const relatedProducts = [
   {
@@ -34,6 +39,24 @@ const relatedProducts = [
 ];
 
 export default function UpsellProducts() {
+  const { addItem } = useCart();
+  const { toast } = useToast();
+
+  const handleAddToCart = (product: typeof relatedProducts[0]) => {
+    const cartItem: Omit<CartItem, 'id'> = {
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      quantity: 1,
+      purchaseType: 'simple',
+    };
+    addItem(cartItem);
+    toast({
+      title: "Added to cart",
+      description: `1x ${product.name}`,
+    });
+  };
+
   return (
     <section className="mt-16">
       <h2 className="text-3xl font-headline font-bold text-center mb-8">You Might Also Like</h2>
@@ -56,7 +79,7 @@ export default function UpsellProducts() {
               <p className="text-muted-foreground">${product.price.toFixed(2)}</p>
             </CardContent>
             <CardFooter className="p-4 pt-0">
-              <Button variant="secondary" className="w-full">Add to Cart</Button>
+              <Button variant="secondary" className="w-full" onClick={() => handleAddToCart(product)}>Add to Cart</Button>
             </CardFooter>
           </Card>
         ))}

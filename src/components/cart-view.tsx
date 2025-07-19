@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 import { Minus, Plus, Trash2, ShoppingCart } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { Button } from "@/components/ui/button";
@@ -9,7 +10,13 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Separator } from "@/components/ui/separator";
 
 export default function CartView() {
-  const { items, removeItem, updateQuantity, subtotal, totalItems } = useCart();
+  const { items, removeItem, updateQuantity, subtotal, totalItems, clearCart } = useCart();
+  const router = useRouter();
+
+  const handleCheckout = () => {
+    clearCart();
+    router.push('/order-confirmed');
+  };
 
   if (items.length === 0) {
     return (
@@ -30,16 +37,18 @@ export default function CartView() {
         {items.map((item) => (
           <Card key={item.id} className="flex items-center p-4">
             <div className="relative h-24 w-24 rounded-md overflow-hidden">
-              <Image src={item.image} alt={item.name} fill className="object-cover" />
+              <Image src={item.image} alt={item.name} fill className="object-cover" unoptimized />
             </div>
             <div className="ml-4 flex-grow">
               <h3 className="font-semibold">{item.name}</h3>
               <p className="text-sm text-muted-foreground capitalize">
-                {item.bundle} / {item.purchaseType.replace('-', ' ')}
+                {item.bundle ? `${item.bundle} / ` : ''}{item.purchaseType.replace('-', ' ')}
               </p>
-              <p className="text-sm text-muted-foreground">
-                {item.flavor1}{item.flavor2 && `, ${item.flavor2}`}
-              </p>
+              {item.flavor1 && (
+                <p className="text-sm text-muted-foreground">
+                  {item.flavor1}{item.flavor2 && `, ${item.flavor2}`}
+                </p>
+              )}
                <p className="font-semibold mt-1">${item.price.toFixed(2)}</p>
             </div>
             <div className="flex items-center gap-4">
@@ -77,7 +86,7 @@ export default function CartView() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button className="w-full" size="lg">Proceed to Checkout</Button>
+            <Button className="w-full" size="lg" onClick={handleCheckout}>Proceed to Checkout</Button>
           </CardFooter>
         </Card>
       </div>
