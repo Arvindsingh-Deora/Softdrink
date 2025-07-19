@@ -45,7 +45,7 @@ export default function CartView() {
                 {item.bundle ? `${item.bundle} / ` : ''}{item.purchaseType.replace('-', ' ')}
               </p>
               {item.flavor1 && (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground capitalize">
                   {item.flavor1}{item.flavor2 && `, ${item.flavor2}`}
                 </p>
               )}

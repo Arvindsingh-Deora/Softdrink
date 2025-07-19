@@ -85,10 +85,10 @@ export default function ProductPage({ product, allProducts }: ProductPageProps) 
       price: finalPrice,
       image: mainImage.url,
       quantity,
-      purchaseType: product.type === 'simple' ? 'simple' : purchaseType,
-      bundle: product.type === 'complex' ? bundle : undefined,
-      flavor1: product.type === 'complex' ? flavor1 : undefined,
-      flavor2: product.type === 'complex' && bundle === "double" ? flavor2 : undefined,
+      purchaseType: purchaseType,
+      bundle: bundle,
+      flavor1: flavor1,
+      flavor2: bundle === "double" ? flavor2 : undefined,
     };
     addItem(item);
     toast({
@@ -99,13 +99,13 @@ export default function ProductPage({ product, allProducts }: ProductPageProps) 
   
   const currentPriceInfo = React.useMemo(() => {
     let currentBase = product.basePrice;
-    if (product.type === 'complex' && bundle === 'double') {
+    if (bundle === 'double') {
         currentBase *= 2;
     }
     
     const originalPrice = currentBase;
-    const oneTimePrice = product.type === 'complex' ? originalPrice * 0.8 : originalPrice; // 20% off for complex
-    const subscriptionPrice = product.type === 'complex' ? (originalPrice * 0.75) * 0.8 : originalPrice; // 25% + 20% off for complex
+    const oneTimePrice = originalPrice * 0.8;
+    const subscriptionPrice = originalPrice * 0.75 * 0.8;
 
     return {
       oneTime: oneTimePrice,
@@ -114,11 +114,9 @@ export default function ProductPage({ product, allProducts }: ProductPageProps) 
     };
   }, [bundle, product]);
 
-  const finalPrice = product.type === 'simple' 
-    ? product.basePrice 
-    : (purchaseType === "subscription" ? currentPriceInfo.subscription : currentPriceInfo.oneTime);
+  const finalPrice = purchaseType === "subscription" ? currentPriceInfo.subscription : currentPriceInfo.oneTime;
     
-  const currentThumbnails: ProductImage[] = product.type === 'complex' && product.images[flavor1] 
+  const currentThumbnails: ProductImage[] = product.images[flavor1] 
     ? product.images[flavor1] 
     : product.images.default;
 
@@ -158,65 +156,61 @@ export default function ProductPage({ product, allProducts }: ProductPageProps) 
           <h1 className="font-headline text-4xl md:text-5xl font-bold">{product.name}</h1>
           <div className="flex items-baseline gap-4">
             <span className="text-4xl font-bold text-primary">${(finalPrice * quantity).toFixed(2)}</span>
-            {product.type === 'complex' && <span className="text-2xl text-muted-foreground line-through">${(currentPriceInfo.original * quantity).toFixed(2)}</span>}
+            <span className="text-2xl text-muted-foreground line-through">${(currentPriceInfo.original * quantity).toFixed(2)}</span>
           </div>
           
-          {product.type === 'complex' && product.flavors && (
-            <>
-              <Tabs value={purchaseType} onValueChange={(v) => setPurchaseType(v as PurchaseType)} className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="one-time">One-Time Purchase</TabsTrigger>
-                  <TabsTrigger value="subscription">Subscribe & Save 25%</TabsTrigger>
-                </TabsList>
-              </Tabs>
+          <Tabs value={purchaseType} onValueChange={(v) => setPurchaseType(v as PurchaseType)} className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="one-time">One-Time Purchase</TabsTrigger>
+              <TabsTrigger value="subscription">Subscribe & Save 25%</TabsTrigger>
+            </TabsList>
+          </Tabs>
 
-              <Card>
-                <CardContent className="p-6">
-                  <RadioGroup value={bundle} onValueChange={(v) => setBundle(v as Bundle)} className="space-y-4">
-                    <Label htmlFor="single" className="flex items-center justify-between p-4 border rounded-md cursor-pointer has-[:checked]:bg-secondary has-[:checked]:border-primary">
-                      <span>Single Drink</span>
-                      <RadioGroupItem value="single" id="single" />
-                    </Label>
-                    <Label htmlFor="double" className="flex items-center justify-between p-4 border rounded-md cursor-pointer has-[:checked]:bg-secondary has-[:checked]:border-primary">
-                      <span>Double Drink</span>
-                      <RadioGroupItem value="double" id="double" />
-                    </Label>
-                  </RadioGroup>
-                </CardContent>
-              </Card>
+          <Card>
+            <CardContent className="p-6">
+              <RadioGroup value={bundle} onValueChange={(v) => setBundle(v as Bundle)} className="space-y-4">
+                <Label htmlFor="single" className="flex items-center justify-between p-4 border rounded-md cursor-pointer has-[:checked]:bg-secondary has-[:checked]:border-primary">
+                  <span>Single Drink</span>
+                  <RadioGroupItem value="single" id="single" />
+                </Label>
+                <Label htmlFor="double" className="flex items-center justify-between p-4 border rounded-md cursor-pointer has-[:checked]:bg-secondary has-[:checked]:border-primary">
+                  <span>Double Drink</span>
+                  <RadioGroupItem value="double" id="double" />
+                </Label>
+              </RadioGroup>
+            </CardContent>
+          </Card>
 
-              <div className={cn("grid gap-4", bundle === "double" ? "grid-cols-2" : "grid-cols-1")}>
-                <div className="space-y-2">
-                  <Label htmlFor="flavor1">Flavor</Label>
-                  <Select value={flavor1} onValueChange={(v) => setFlavor1(v as Flavor)}>
-                    <SelectTrigger id="flavor1">
-                      <SelectValue placeholder="Select flavor" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {product.flavors.map((f) => (
-                        <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                {bundle === 'double' && (
-                  <div className="space-y-2">
-                    <Label htmlFor="flavor2">Flavor 2</Label>
-                    <Select value={flavor2} onValueChange={(v) => setFlavor2(v as Flavor)}>
-                      <SelectTrigger id="flavor2">
-                        <SelectValue placeholder="Select flavor" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {product.flavors.map((f) => (
-                          <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
+          <div className={cn("grid gap-4", bundle === "double" ? "grid-cols-2" : "grid-cols-1")}>
+            <div className="space-y-2">
+              <Label htmlFor="flavor1">Flavor</Label>
+              <Select value={flavor1} onValueChange={(v) => setFlavor1(v as Flavor)}>
+                <SelectTrigger id="flavor1">
+                  <SelectValue placeholder="Select flavor" />
+                </SelectTrigger>
+                <SelectContent>
+                  {product.flavors.map((f) => (
+                    <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {bundle === 'double' && (
+              <div className="space-y-2">
+                <Label htmlFor="flavor2">Flavor 2</Label>
+                <Select value={flavor2} onValueChange={(v) => setFlavor2(v as Flavor)}>
+                  <SelectTrigger id="flavor2">
+                    <SelectValue placeholder="Select flavor" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {product.flavors.map((f) => (
+                      <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-            </>
-          )}
+            )}
+          </div>
           
           <div className="flex items-center gap-4">
              <div className="flex items-center border rounded-md">
@@ -230,19 +224,17 @@ export default function ProductPage({ product, allProducts }: ProductPageProps) 
              <Button variant="outline" size="icon"><Heart className="h-5 w-5" /></Button>
           </div>
 
-          {product.type === 'complex' && (
-            <Card className="bg-secondary">
-              <CardHeader>
-                <CardTitle>What's Included</CardTitle>
-              </CardHeader>
-              <CardContent className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="flex items-center gap-2"><Gift className="h-5 w-5 text-primary"/><span>Free gift in every order</span></div>
-                  <div className="flex items-center gap-2"><Truck className="h-5 w-5 text-primary"/><span>Free shipping always</span></div>
-                  <div className="flex items-center gap-2"><Repeat className="h-5 w-5 text-primary"/><span>{purchaseType === 'subscription' ? 'Delivered every 30 days' : 'One-time delivery'}</span></div>
-                  <div className="flex items-center gap-2"><Leaf className="h-5 w-5 text-primary"/><span>Natural ingredients</span></div>
-              </CardContent>
-            </Card>
-          )}
+          <Card className="bg-secondary">
+            <CardHeader>
+              <CardTitle>What's Included</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-2 gap-4 text-sm">
+                <div className="flex items-center gap-2"><Gift className="h-5 w-5 text-primary"/><span>Free gift in every order</span></div>
+                <div className="flex items-center gap-2"><Truck className="h-5 w-5 text-primary"/><span>Free shipping always</span></div>
+                <div className="flex items-center gap-2"><Repeat className="h-5 w-5 text-primary"/><span>{purchaseType === 'subscription' ? 'Delivered every 30 days' : 'One-time delivery'}</span></div>
+                <div className="flex items-center gap-2"><Leaf className="h-5 w-5 text-primary"/><span>Natural ingredients</span></div>
+            </CardContent>
+          </Card>
 
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-1">
@@ -251,22 +243,18 @@ export default function ProductPage({ product, allProducts }: ProductPageProps) 
                 {product.description}
               </AccordionContent>
             </AccordionItem>
-            {product.ingredients && (
-                <AccordionItem value="item-2">
-                <AccordionTrigger>Ingredients</AccordionTrigger>
-                <AccordionContent>
-                    {product.ingredients}
-                </AccordionContent>
-                </AccordionItem>
-            )}
-            {product.nutrition && (
-                <AccordionItem value="item-3">
-                <AccordionTrigger>Nutritional Facts</AccordionTrigger>
-                <AccordionContent>
-                    {product.nutrition}
-                </AccordionContent>
-                </AccordionItem>
-            )}
+            <AccordionItem value="item-2">
+              <AccordionTrigger>Ingredients</AccordionTrigger>
+              <AccordionContent>
+                  {product.ingredients}
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-3">
+              <AccordionTrigger>Nutritional Facts</AccordionTrigger>
+              <AccordionContent>
+                  {product.nutrition}
+              </AccordionContent>
+            </AccordionItem>
           </Accordion>
         </div>
       </div>

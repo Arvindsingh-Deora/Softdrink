@@ -19,12 +19,15 @@ export default function UpsellProducts({ allProducts, currentProductSlug }: Upse
   const { toast } = useToast();
 
   const handleAddToCart = (product: Product) => {
+    const finalPrice = product.basePrice * 0.8; // Default to one-time purchase price
     const cartItem: Omit<CartItem, 'id'> = {
       name: product.name,
-      price: product.basePrice,
+      price: finalPrice,
       image: product.images.default[0].url,
       quantity: 1,
-      purchaseType: 'simple',
+      purchaseType: 'one-time',
+      bundle: 'single',
+      flavor1: product.flavors[0].id,
     };
     addItem(cartItem);
     toast({
@@ -33,7 +36,7 @@ export default function UpsellProducts({ allProducts, currentProductSlug }: Upse
     });
   };
 
-  const relatedProducts = allProducts.filter(p => p.slug !== currentProductSlug && p.slug !== 'protein-powder').slice(0, 4);
+  const relatedProducts = allProducts.filter(p => p.slug !== currentProductSlug).slice(0, 4);
 
   return (
     <section className="mt-16">
@@ -56,7 +59,7 @@ export default function UpsellProducts({ allProducts, currentProductSlug }: Upse
               </CardHeader>
               <CardContent className="flex-grow p-4">
                 <h3 className="font-semibold text-lg">{product.name}</h3>
-                <p className="text-muted-foreground">${product.basePrice.toFixed(2)}</p>
+                <p className="text-muted-foreground">${(product.basePrice * 0.8).toFixed(2)}</p>
               </CardContent>
             </Link>
             <CardFooter className="p-4 pt-0">

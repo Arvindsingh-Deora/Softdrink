@@ -5,9 +5,9 @@ import React, { createContext, useReducer, Dispatch, ReactNode } from "react";
 export interface CartItem {
   id: string; // A unique ID generated from product options
   name: string;
-  purchaseType: "one-time" | "subscription" | "simple";
-  bundle?: "single" | "double";
-  flavor1?: string;
+  purchaseType: "one-time" | "subscription";
+  bundle: "single" | "double";
+  flavor1: string;
   flavor2?: string;
   price: number;
   image: string;
@@ -29,9 +29,6 @@ const initialState: CartState = {
 };
 
 const generateCartId = (item: Omit<CartItem, "id" | "quantity">): string => {
-  if (item.purchaseType === 'simple') {
-    return `${item.name}`;
-  }
   return `${item.name}-${item.purchaseType}-${item.bundle}-${item.flavor1}-${item.flavor2 || ''}`;
 };
 
