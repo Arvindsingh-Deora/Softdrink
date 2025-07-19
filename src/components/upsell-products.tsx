@@ -12,14 +12,14 @@ const relatedProducts = [
     id: 1,
     name: "Shaker Bottle",
     price: 12.99,
-    image: "https://placehold.co/400x400.png",
+    image: "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcQf8EPKVfLDLMdebLg54UcXDF2C8yhYHCWjKren3xavUiqOOyfWYsRxMbD5h--ZAA_-IX0lNso6CMVdmUz5uLnMvSUTO9VG1w8mTS4gozFdRHPCaqqe729AoQ",
     hint: "shaker bottle",
   },
   {
     id: 2,
     name: "Energy Bar (Box of 12)",
     price: 24.99,
-    image: "https://placehold.co/400x400.png",
+    image: "https://4degreesu.com/cdn/shop/files/Original_Nutrition_Bar.jpg?v=1752563087&width=900",
     hint: "energy bar",
   },
   {
@@ -33,7 +33,7 @@ const relatedProducts = [
     id: 4,
     name: "Workout T-Shirt",
     price: 20.00,
-    image: "https://placehold.co/400x400.png",
+    image: "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcS1rSYBuyDCTYE3CgDtBjhlTst3Im7wZUpfjeukyLiDJlkvkly7r1qqv0nipvIPHVR4BOqBHIiqcFCEvl8v7xWS0ljsXjWcgdh0IdjTZhXs3NIh496bTweK",
     hint: "grey t-shirt",
   },
 ];
@@ -71,6 +71,7 @@ export default function UpsellProducts() {
                   fill
                   className="object-cover"
                   data-ai-hint={product.hint}
+                  unoptimized
                 />
               </div>
             </CardHeader>
