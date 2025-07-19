@@ -12,7 +12,7 @@ export default function SiteFooter() {
     <footer className="border-t bg-background mt-12">
       <div className="container py-8 flex flex-col sm:flex-row justify-between items-center gap-4">
         <p className="text-sm text-muted-foreground">
-          Made with ❤️ by Arvind
+          Made with ❤️ by <a href="https://webnew-front.onrender.com/" target="_blank" rel="noopener noreferrer" className="font-semibold text-foreground hover:underline">Arvind</a>
         </p>
         <div className="flex items-center gap-4">
           {socialLinks.map((link) => (

@@ -2,7 +2,7 @@ import ProductPage from "@/components/product-page";
 import { getProduct, getProducts } from "@/lib/products";
 
 export default function Home() {
-  const defaultProduct = getProduct("juice-powder");
+  const defaultProduct = getProduct("jablonski-spritz");
   const allProducts = getProducts();
 
   if (!defaultProduct) {
